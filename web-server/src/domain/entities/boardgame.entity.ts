@@ -1,3 +1,5 @@
+import { v4 } from 'uuid';
+
 export interface IBoardGame {
   id: string;
   createdAt: Date;
@@ -14,9 +16,9 @@ export class BoardGame {
     props: IBoardGame
   ) {
     this.#props = {
-      id: props.id,
-      createdAt: props.createdAt || new Date(),
-      updatedAt: props.updatedAt || new Date(),
+      id: props.id ?? v4(),
+      createdAt: props.createdAt ?? new Date(),
+      updatedAt: props.updatedAt ?? new Date(),
       name: props.name,
       description: props.description,
       link: props.link,
