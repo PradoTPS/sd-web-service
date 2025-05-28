@@ -9,27 +9,32 @@ export class SqliteBoardGameRepository implements IBoardGameRepository {
   }
 
   async findAll(): Promise<BoardGame[]> {
-    const rows = await this.db.all("SELECT * FROM board_games");
+    const stmt = this.db.prepare("SELECT * FROM board_games");
+    const rows =  stmt.all();
     return rows.map((row: any) => new BoardGame(row));
   }
 
   async findById(id: string): Promise<BoardGame | undefined> {
-    const row = await this.db.get("SELECT * FROM board_games WHERE id = ?", [id]);
+    const stmt = this.db.prepare("SELECT * FROM board_games WHERE id = ?");
+    const row = stmt.get(id);
     return row ? new BoardGame(row) : undefined;
   }
 
   async create(boardGame: BoardGame): Promise<void> {
     const { id, name, description, link, createdAt, updatedAt } = boardGame.toJSON();
-    await this.db.run("INSERT INTO board_games (id, name, description, link, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)", [id, name, description, link, createdAt, updatedAt]);
+    const stmt = this.db.prepare("INSERT INTO board_games (id, name, description, link, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)");
+    stmt.run(id, name, description, link, createdAt, updatedAt);
   }
 
   async update(boardGame: BoardGame): Promise<void> {
-    const { id, name, description } = boardGame.toJSON();
-    await this.db.run("UPDATE board_games SET name = ?, description = ? WHERE id = ?", [name, description, id]);
+    const { id, name, description, link, updatedAt } = boardGame.toJSON();
+    const stmt = this.db.prepare("UPDATE board_games SET name = ?, description = ?, link = ?, updatedAt = ? WHERE id = ?");
+    stmt.run(name, description, link, updatedAt, id);
   }
 
   async delete(boardGame: BoardGame): Promise<void> {
     const { id } = boardGame.toJSON();
-    await this.db.run("DELETE FROM board_games WHERE id = ?", [id]);
+    const stmt = this.db.prepare("DELETE FROM board_games WHERE id = ?");
+    stmt.run(id);
   }
 }

@@ -1,6 +1,6 @@
 import { v4 } from 'uuid';
 
-export interface IBoardGame {
+export interface IBoardGame<Date> {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -10,7 +10,7 @@ export interface IBoardGame {
 }
 
 export class BoardGame {
-  readonly #props: IBoardGame;
+  readonly #props: IBoardGame<Date>;
 
   constructor(
     props: {
@@ -24,8 +24,8 @@ export class BoardGame {
   ) {
     this.#props = {
       id: props.id ?? v4(),
-      createdAt: props.createdAt ?? new Date(),
-      updatedAt: props.updatedAt ?? new Date(),
+      createdAt: new Date(props.createdAt ?? Date.now()),
+      updatedAt: new Date(props.updatedAt ?? Date.now()),
       name: props.name,
       description: props.description,
       link: props.link,
@@ -71,9 +71,11 @@ export class BoardGame {
     this.#props.updatedAt = new Date();
   }
 
-  toJSON(): IBoardGame {
+  toJSON(): IBoardGame<string> {
     return {
       ...this.#props,
+      createdAt: this.#props.createdAt.toISOString(),
+      updatedAt: this.#props.updatedAt.toISOString(),
     };
   }
 }

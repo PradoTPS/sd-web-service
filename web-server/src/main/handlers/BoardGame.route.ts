@@ -5,6 +5,8 @@ import { SqliteBoardGameRepository } from '../../infrastructure/repositories/sql
 import db from '../../infrastructure/repositories/sqlite/sqliteDatabase'
 import { CreateBoardGameUseCase } from '../../app/useCases/createBoardGame.useCase'
 import { CreateBoardGameController } from '../../app/controllers/createBoardGame.controller'
+import { DeleteBoardGameController } from '../../app/controllers/deleteBoardGame.controller'
+import { DeleteBoardGameUseCase } from '../../app/useCases/deleteBoardGame.useCase'
 
 class BoardGameRoutes {
   public prefix_route = '/boardgames'
@@ -34,9 +36,9 @@ class BoardGameRoutes {
     })
 
     fastify.delete(`/:boardGameId`, async (request, reply) => {
-      const { boardGameId } = request.params as { boardGameId: string };
+      const { boardGameId } = request.params as { boardGameId: Parameters<typeof DeleteBoardGameController.prototype.handle>[0]['boardGameId'] };
 
-      return `Deleted Board Game ${boardGameId}\n`;
+      return new DeleteBoardGameController( new DeleteBoardGameUseCase ( new SqliteBoardGameRepository(db) ) ).handle({ boardGameId });
     })
   }
 }
