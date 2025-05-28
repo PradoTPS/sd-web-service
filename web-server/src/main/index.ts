@@ -1,15 +1,14 @@
-import fastify from 'fastify'
+import App from '../infrastructure/webserver/fastify/server';
+import BoardGameRoutes from './handlers/BoardGame.route';
+import PlayerRoutes from './handlers/Player.route';
+import ListRoutes from './handlers/List.route';
 
-const server = fastify();
-
-server.get('/ping', async (request, reply) => {
-  return 'pong\n'
+export const app = new App({
+  routes: [
+    BoardGameRoutes,
+    PlayerRoutes,
+    ListRoutes,
+  ],
 })
 
-server.listen({ port: 8080 }, (err, address) => {
-  if (err) {
-    console.error(err)
-    process.exit(1)
-  }
-  console.log(`Server listening at ${address}`)
-});
+app.listen();
