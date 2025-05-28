@@ -1,3 +1,4 @@
+import { List } from "../../../domain/entities/list.entity";
 import { Player } from "../../../domain/entities/player.entity";
 import { IPlayerRepository } from "../../../domain/repositories/iPlayer.repository";
 
@@ -9,21 +10,25 @@ export class SqlitePlayerRepository implements IPlayerRepository {
   }
 
   async findAll(): Promise<Player[]> {
-    const stmt = this.db.prepare("SELECT * FROM players");
-    const rows =  stmt.all();
-    return rows.map((row: any) => new Player(row));
+    const rows = this.db.prepare("SELECT * FROM players").all();
+
+    return rows.map((row: any) => {
+      const listRows = this.db.prepare("SELECT * FROM lists WHERE player_id = ?").all(row.id);
+      return new Player({...row, lists: listRows.map((row: any) => new List(row))});
+    });
   }
 
   async findById(id: string): Promise<Player | undefined> {
-    const stmt = this.db.prepare("SELECT * FROM players WHERE id = ?");
-    const row = stmt.get(id);
-    return row ? new Player(row) : undefined;
+    const row = this.db.prepare("SELECT * FROM players WHERE id = ?").get(id);
+    const listRows = this.db.prepare("SELECT * FROM lists WHERE player_id = ?").all(id);
+
+    return row ? new Player({...row, lists: listRows.map((row: any) => new List(row)) }) : undefined;
   }
 
   async create(player: Player): Promise<void> {
     const { id, name, email, createdAt, updatedAt } = player.toJSON();
-    const stmt = this.db.prepare("INSERT INTO players (id, name, email, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)");
-    stmt.run(id, name, email, createdAt, updatedAt);
+
+    this.db.prepare("INSERT INTO players (id, name, email, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)").run(id, name, email, createdAt, updatedAt);
   }
 
   async update(player: Player, { name, email }: { name: string | undefined, email: string | undefined }): Promise<Player> {
@@ -33,11 +38,9 @@ export class SqlitePlayerRepository implements IPlayerRepository {
       email: currentEmail,
     } = player.toJSON();
 
-    let stmt = this.db.prepare("UPDATE players SET name = ?, email = ?, updatedAt = ? WHERE id = ?");
-    stmt.run(name ?? currentName, email ?? currentEmail, new Date().toISOString(), id);
+    this.db.prepare("UPDATE players SET name = ?, email = ?, updatedAt = ? WHERE id = ?").run(name ?? currentName, email ?? currentEmail, new Date().toISOString(), id);
 
-    stmt = this.db.prepare("SELECT * FROM players WHERE id = ?");
-    const row = stmt.get(id);
+    const row = this.db.prepare("SELECT * FROM players WHERE id = ?").get(id);
 
     if (!row) throw new Error(`Player with id ${id} not found, but was expected`);
 
@@ -46,7 +49,6 @@ export class SqlitePlayerRepository implements IPlayerRepository {
 
   async delete(player: Player): Promise<void> {
     const { id } = player.toJSON();
-    const stmt = this.db.prepare("DELETE FROM players WHERE id = ?");
-    stmt.run(id);
+    this.db.prepare("DELETE FROM players WHERE id = ?").run(id);
   }
 }
