@@ -1,5 +1,5 @@
 import { BoardGame } from "../../domain/entities/boardgame.entity";
-import { GetBoardGamesUseCase } from "../useCases/getBoarGames.useCase";
+import { GetBoardGamesUseCase } from "../useCases/getBoardGames.useCase";
 
 export interface IResponse {
   body: {

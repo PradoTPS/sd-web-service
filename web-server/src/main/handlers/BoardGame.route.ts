@@ -1,6 +1,8 @@
 import { FastifyInstance } from 'fastify'
 import { GetBoardGamesController } from '../../app/controllers/getBoardGames.controller'
-import { GetBoardGamesUseCase } from '../../app/useCases/getBoarGames.useCase'
+import { GetBoardGamesUseCase } from '../../app/useCases/getBoardGames.useCase'
+import { GetBoardGameController } from '../../app/controllers/getBoardGame.controller'
+import { GetBoardGameUseCase } from '../../app/useCases/getBoardGame.useCase'
 import { SqliteBoardGameRepository } from '../../infrastructure/repositories/sqlite/sqliteBoardGame.repository'
 import db from '../../infrastructure/repositories/sqlite/sqliteDatabase'
 import { CreateBoardGameUseCase } from '../../app/useCases/createBoardGame.useCase'
@@ -24,9 +26,9 @@ class BoardGameRoutes {
     })
 
     fastify.get(`/:boardGameId`, async (request, reply) => {
-      const { boardGameId } = request.params as { boardGameId: string };
+      const { boardGameId } = request.params as { boardGameId: Parameters<typeof GetBoardGameController.prototype.handle>[0]['boardGameId'] };
 
-      return `Got Board Game ${boardGameId}\n`;
+      return new GetBoardGameController( new GetBoardGameUseCase ( new SqliteBoardGameRepository(db) ) ).handle({ boardGameId });
     })
 
     fastify.put(`/:boardGameId`, async (request, reply) => {
