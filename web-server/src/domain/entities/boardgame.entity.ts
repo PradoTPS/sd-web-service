@@ -13,7 +13,14 @@ export class BoardGame {
   readonly #props: IBoardGame;
 
   constructor(
-    props: IBoardGame
+    props: {
+      id?: string;
+      createdAt?: Date;
+      updatedAt?: Date;
+      name: string;
+      description: string;
+      link: string;
+    }
   ) {
     this.#props = {
       id: props.id ?? v4(),

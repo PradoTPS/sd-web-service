@@ -21,7 +21,14 @@ export class List {
   readonly #props: IList;
 
   constructor(
-    props: IList
+    props: {
+      id?: string;
+      createdAt?: Date;
+      updatedAt?: Date;
+      name: string;
+      playerId: string;
+      boardGames?: IBoardGame[]; 
+    }
   ) {
     this.#props = {
       id: props.id ?? v4(),

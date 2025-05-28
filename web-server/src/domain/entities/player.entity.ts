@@ -20,7 +20,14 @@ export class Player {
   readonly #props: IPlayer;
 
   constructor(
-    props: IPlayer
+    props: {
+      id?: string;
+      createdAt?: Date;
+      updatedAt?: Date;
+      name: string;
+      email: string;
+      lists?: IList[];
+    }
   ) {
     this.#props = {
       id: props.id ?? v4(),
