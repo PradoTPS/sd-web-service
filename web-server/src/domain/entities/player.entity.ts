@@ -7,7 +7,7 @@ export interface IList {
   name: string;
 }
 
-export interface IPlayer {
+export interface IPlayer<Date> {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -17,7 +17,7 @@ export interface IPlayer {
 }
 
 export class Player {
-  readonly #props: IPlayer;
+  readonly #props: IPlayer<Date>;
 
   constructor(
     props: {
@@ -31,14 +31,14 @@ export class Player {
   ) {
     this.#props = {
       id: props.id ?? v4(),
-      createdAt: props.createdAt ?? new Date(),
-      updatedAt: props.updatedAt ?? new Date(),
+      createdAt: new Date(props.createdAt ?? Date.now()),
+      updatedAt: new Date(props.updatedAt ?? Date.now()),
       name: props.name,
       email: props.email,
       lists: props.lists?.map(list => ({
         id: list.id,
-        createdAt: list.createdAt ?? new Date(),
-        updatedAt: list.updatedAt ?? new Date(),
+        createdAt: new Date(props.createdAt ?? Date.now()),
+        updatedAt: new Date(props.updatedAt ?? Date.now()),
         name: list.name,
       })) ?? [],
     };
@@ -70,17 +70,19 @@ export class Player {
 
   set name(name: string) {
     this.#props.name = name;
-    this.#props.updatedAt = new Date();
+    this.#props.updatedAt = new Date(Date.now());
   }
 
   set email(email: string) {
     this.#props.email = email;
-    this.#props.updatedAt = new Date();
+    this.#props.updatedAt = new Date(Date.now());
   }
 
-  toJSON(): IPlayer {
+  toJSON(): IPlayer<string> {
     return {
       ...this.#props,
+      createdAt: this.#props.createdAt.toISOString(),
+      updatedAt: this.#props.updatedAt.toISOString(),
     };
   }
 }

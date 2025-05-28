@@ -58,17 +58,17 @@ export class BoardGame {
 
   set name(name: string) {
     this.#props.name = name;
-    this.#props.updatedAt = new Date();
+    this.#props.updatedAt = new Date(Date.now());
   }
 
   set description(description: string) {
     this.#props.description = description;
-    this.#props.updatedAt = new Date();
+    this.#props.updatedAt = new Date(Date.now());
   }
 
   set link(link: string) {
     this.#props.link = link;
-    this.#props.updatedAt = new Date();
+    this.#props.updatedAt = new Date(Date.now());
   }
 
   toJSON(): IBoardGame<string> {

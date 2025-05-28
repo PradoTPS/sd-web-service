@@ -7,9 +7,9 @@ const db = new Database('./tmp/app.db');
 // stmt.run();
 // stmt = db.prepare("CREATE TABLE players (id TEXT PRIMARY KEY, name TEXT, email TEXT, createdAt TEXT, updatedAt TEXT)");
 // stmt.run();
-// stmt = db.prepare("CREATE TABLE lists (id TEXT PRIMARY KEY, name TEXT, player_id TEXT REFERENCES players(id) ON UPDATE CASCADE, createdAt TEXT, updatedAt TEXT)");
+// stmt = db.prepare("CREATE TABLE lists (id TEXT PRIMARY KEY, name TEXT, player_id TEXT REFERENCES players(id) ON UPDATE CASCADE ON DELETE CASCADE, createdAt TEXT, updatedAt TEXT)");
 // stmt.run();
-// stmt = db.prepare("CREATE TABLE lists_board_games (id TEXT PRIMARY KEY, list_id TEXT REFERENCES lists(id) ON UPDATE CASCADE, board_game_id TEXT REFERENCES board_games(id) ON UPDATE CASCADE, createdAt TEXT, updatedAt TEXT)");
+// stmt = db.prepare("CREATE TABLE lists_board_games (id TEXT PRIMARY KEY, list_id TEXT REFERENCES lists(id) ON UPDATE CASCADE ON DELETE CASCADE, board_game_id TEXT REFERENCES board_games(id) ON UPDATE CASCADE ON DELETE CASCADE, createdAt TEXT, updatedAt TEXT)");
 // stmt.run();
 
 // // Seed

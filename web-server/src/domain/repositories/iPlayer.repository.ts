@@ -7,7 +7,7 @@ export interface IPlayerRepository {
 
   create(player: Player): Promise<void>;
 
-  update(player: Player): Promise<void>;
+  update(player: Player, { name, email }: { name: string | undefined, email: string | undefined }): Promise<Player>;
  
   delete(player: Player): Promise<void>;
 }
