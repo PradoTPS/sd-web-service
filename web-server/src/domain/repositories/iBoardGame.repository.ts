@@ -7,7 +7,7 @@ export interface IBoardGameRepository {
 
   create(boardGame: BoardGame): Promise<void>;
 
-  update(boardGame: BoardGame): Promise<void>;
+  update(boardGame: BoardGame, { name, description, link }: { name: string | undefined, description: string | undefined, link: string | undefined }): Promise<BoardGame>;
  
   delete(boardGame: BoardGame): Promise<void>;
 }

@@ -8,9 +8,7 @@ export class GetBoardGameUseCase {
   async execute(data: IGetBoardGameDTOInput): Promise<IGetBoardGameDTOOutput> {
     const boardGame = await this.boardGameRepository.findById(data.id);
 
-    if (!boardGame) {
-      throw new NotFound(`Board game with id ${data.id} not found`);
-    }
+    if (!boardGame) throw new NotFound(`Board game with id ${data.id} not found`);
 
     return {
       boardGame,
