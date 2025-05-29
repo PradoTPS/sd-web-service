@@ -1,3 +1,4 @@
+import { BoardGame } from "../../../domain/entities/boardgame.entity";
 import { List } from "../../../domain/entities/list.entity";
 import { IListRepository } from "../../../domain/repositories/iList.repository";
 
@@ -9,18 +10,28 @@ export class SqliteListRepository implements IListRepository {
   }
 
   async findAll(): Promise<List[]> {
-    const rows =  this.db.prepare("SELECT * FROM lists").all();
-    return rows.map((row: any) => new List(row));
+    const rows = this.db.prepare("SELECT * FROM lists").all();
+
+    return rows.map((row: any) => {
+      const boardGamesRows = this.db.prepare("SELECT * FROM lists_board_games WHERE list_id = ?").all(row.id);
+      return new List({...row, boardGames: boardGamesRows.map((row: any) => new BoardGame(row))});
+    });
   }
 
   async findById(id: string): Promise<List | undefined> {
     const row = this.db.prepare("SELECT * FROM lists WHERE id = ?").get(id);
-    return row ? new List(row) : undefined;
+    const boardGamesRows = this.db.prepare("SELECT * FROM lists_board_games WHERE list_id = ?").all(id);
+
+    return row ? new List({...row, boardGames: boardGamesRows.map((row: any) => new BoardGame(row)) }) : undefined;
   }
 
   async findByPlayerId(playerId: string): Promise<List[]> {
     const rows = this.db.prepare("SELECT * FROM lists WHERE player_id = ?").all(playerId);
-    return rows.map((row: any) => new List(row));
+    
+    return rows.map((row: any) => {
+      const boardGamesRows = this.db.prepare("SELECT * FROM lists_board_games WHERE list_id = ?").all(row.id);
+      return new List({...row, boardGames: boardGamesRows.map((row: any) => new BoardGame(row))});
+    });
   }
 
   async create(list: List): Promise<void> {
