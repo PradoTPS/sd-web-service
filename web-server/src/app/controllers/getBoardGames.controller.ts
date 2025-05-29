@@ -12,7 +12,7 @@ export interface IResponse {
       link: string;
       createdAt: string;
       updatedAt: string;
-      links: Link[];
+      _links: Link[];
     }>;
   };
   statusCode: number;
@@ -27,7 +27,7 @@ export class GetBoardGamesController {
     const parsedBoardGames = boardGames?.map((boardGame) => {
       return {
         ...boardGame.toJSON(),
-        links: [
+        _links: [
           {
             href: `http://${config.app.domain}:${config.app.port}/boardgames/${boardGame.id}`,
             rel: 'self',

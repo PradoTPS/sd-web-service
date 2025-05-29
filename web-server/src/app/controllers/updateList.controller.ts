@@ -11,7 +11,7 @@ export interface IResponse {
       playerId: string;
       createdAt: string;
       updatedAt: string;
-      links: Link[];
+      _links: Link[];
     };
   };
   statusCode: number;
@@ -39,7 +39,7 @@ export class UpdateListController {
         message: 'List successfully updated!',
         list: {
           ...list.toJSON(),
-          links: [
+          _links: [
             {
               href: `http://${config.app.domain}:${config.app.port}/players/${list.playerId}/lists/${list.id}`,
               rel: 'self',

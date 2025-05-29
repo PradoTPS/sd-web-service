@@ -11,7 +11,7 @@ export interface IResponse {
       email: string;
       createdAt: string;
       updatedAt: string;
-      links: Link[];
+      _links: Link[];
     }
   };
   statusCode: number;
@@ -37,7 +37,7 @@ export class CreatePlayerController {
         message: 'Player successfully created!',
         player: {
           ...player.toJSON(),
-          links: [
+          _links: [
             {
               href: `http://${config.app.domain}:${config.app.port}/players/${player.id}`,
               rel: 'self',

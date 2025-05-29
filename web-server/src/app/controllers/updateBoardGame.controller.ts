@@ -12,7 +12,7 @@ export interface IResponse {
       link: string;
       createdAt: string;
       updatedAt: string;
-      links: Link[];
+      _links: Link[];
     };
   };
   statusCode: number;
@@ -42,7 +42,7 @@ export class UpdateBoardGameController {
         message: 'Board Game successfully updated!',
         boardGame: {
           ...boardGame.toJSON(),
-          links: [
+          _links: [
             {
               href: `http://${config.app.domain}:${config.app.port}/boardgames/${boardGame.id}`,
               rel: 'self',
