@@ -1,4 +1,4 @@
-import { BoardGame } from "../../../domain/entities/boardgame.entity";
+import { BoardGame } from "../../../domain/entities/boardGame.entity";
 import { IBoardGameRepository } from "../../../domain/repositories/iBoardGame.repository";
 
 export class SqliteBoardGameRepository implements IBoardGameRepository {

@@ -12,6 +12,7 @@ export class UpdateListUseCase {
 
     list = await this.ListRepository.update(list, {
       name: data.name,
+      boardGameIds: data.boardGameIds,
     });
 
     return {

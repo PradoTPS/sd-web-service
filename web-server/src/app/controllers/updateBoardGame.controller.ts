@@ -1,4 +1,4 @@
-import { BoardGame } from "../../domain/entities/boardgame.entity";
+import { BoardGame } from "../../domain/entities/boardGame.entity";
 import { UpdateBoardGameUseCase } from "../useCases/updateBoardGame.useCase";
 
 export interface IResponse {

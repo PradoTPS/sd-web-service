@@ -12,6 +12,7 @@ export interface IResponse {
 export interface IEvent {
   listId: string;
   name?: string;
+  boardGames?: string[];
 }
 
 export class UpdateListController {
@@ -21,6 +22,7 @@ export class UpdateListController {
     const { list } = await this.updateListUseCase.execute({
       id: event.listId,
       name: event.name,
+      boardGameIds: event.boardGames,
     });
 
     return {

@@ -1,4 +1,4 @@
-import type { BoardGame } from '../entities/boardgame.entity';
+import type { BoardGame } from '../entities/boardGame.entity';
 
 export interface IBoardGameRepository {
   findAll(): Promise<BoardGame[]>;

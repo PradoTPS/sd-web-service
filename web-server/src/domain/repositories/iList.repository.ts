@@ -11,7 +11,7 @@ export interface IListRepository {
 
   create(list: List): Promise<void>;
 
-  update(list: List, { name }: { name: string | undefined }): Promise<List>;
+  update(list: List, { name, boardGameIds }: { name: string | undefined, boardGameIds: string[] | undefined }): Promise<List>;
  
   delete(list: List): Promise<void>;
 }

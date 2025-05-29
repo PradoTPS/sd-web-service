@@ -1,4 +1,4 @@
-import { BoardGame } from "../../domain/entities/boardgame.entity";
+import { BoardGame } from "../../domain/entities/boardGame.entity";
 
 export interface IUpdateBoardGameDTOInput {
   id: string;

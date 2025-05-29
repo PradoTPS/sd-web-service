@@ -43,6 +43,7 @@ class ListRoutes {
       return new UpdateListController( new UpdateListUseCase ( new SqliteListRepository(db) ) ).handle({
         listId,
         name: body.name,
+        boardGames: body.boardGames,
       });
     })
 
