@@ -1,6 +1,6 @@
 import { v4 } from 'uuid';
 
-export interface IBoardGame {
+export interface IBoardGame<Date> {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -9,16 +9,16 @@ export interface IBoardGame {
   link: string;
 }
 
-export interface IList {
+export interface IList<Date> {
   id: string;
   createdAt: Date;
   updatedAt: Date;
   name: string;
   playerId: string;
-  boardGames?: IBoardGame[];
+  boardGames?: IBoardGame<Date>[];
 }
 export class List {
-  readonly #props: IList;
+  readonly #props: IList<Date>;
 
   constructor(
     props: {
@@ -27,19 +27,19 @@ export class List {
       updatedAt?: Date;
       name: string;
       playerId: string;
-      boardGames?: IBoardGame[]; 
+      boardGames?: IBoardGame<Date>[]; 
     }
   ) {
     this.#props = {
       id: props.id ?? v4(),
-      createdAt: props.createdAt ?? new Date(),
-      updatedAt: props.updatedAt ?? new Date(),
+      createdAt: new Date(props.createdAt ?? Date.now()),
+      updatedAt: new Date(props.updatedAt ?? Date.now()),
       name: props.name,
       playerId: props.playerId,
       boardGames: props.boardGames?.map(boardGame => ({
         id: boardGame.id,
-        createdAt: boardGame.createdAt ?? new Date(),
-        updatedAt: boardGame.updatedAt ?? new Date(),
+        createdAt: new Date(props.createdAt ?? Date.now()),
+      updatedAt: new Date(props.updatedAt ?? Date.now()),
         name: boardGame.name,
         description: boardGame.description,
         link: boardGame.link,
@@ -67,18 +67,25 @@ export class List {
     return this.#props.playerId;
   }
 
-  get boardGames(): IBoardGame[] {
+  get boardGames(): IBoardGame<Date>[] {
     return this.#props.boardGames ?? [];
   }
 
   set name(name: string) {
     this.#props.name = name;
-    this.#props.updatedAt = new Date();
+    this.#props.updatedAt = new Date(Date.now());
   }
 
-  toJSON(): IList {
+  toJSON(): IList<string> {
     return {
       ...this.#props,
+      createdAt: this.#props.createdAt.toISOString(),
+      updatedAt: this.#props.updatedAt.toISOString(),
+      boardGames: this.#props.boardGames?.map(boardGame => ({
+        ...boardGame,
+        createdAt: boardGame.createdAt.toISOString(),
+        updatedAt: boardGame.updatedAt.toISOString(),
+      })) ?? [],
     };
   }
 }

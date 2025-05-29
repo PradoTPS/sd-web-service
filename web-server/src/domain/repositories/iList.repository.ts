@@ -7,11 +7,11 @@ export interface IListRepository {
 
   findByPlayerId(
     playerId: string,
-  ): Promise<{ count: number; lists: List[] }>;
+  ): Promise<List[]>;
 
   create(list: List): Promise<void>;
 
-  update(list: List): Promise<void>;
+  update(list: List, { name }: { name: string | undefined }): Promise<List>;
  
   delete(list: List): Promise<void>;
 }
