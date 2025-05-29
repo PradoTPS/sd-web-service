@@ -14,7 +14,7 @@ export class SqliteListRepository implements IListRepository {
 
     return rows.map((row: any) => {
       const boardGamesRows = this.db.prepare("SELECT bg.* FROM lists_board_games lbg inner join board_games bg on lbg.board_game_id = bg.id WHERE lbg.list_id = ?").all(row.id);
-      return new List({...row, boardGames: boardGamesRows.map((row: any) => new BoardGame(row))});
+      return new List({...row, playerId: row.player_id, boardGames: boardGamesRows.map((row: any) => new BoardGame(row))});
     });
   }
 
@@ -22,7 +22,7 @@ export class SqliteListRepository implements IListRepository {
     const row = this.db.prepare("SELECT * FROM lists WHERE id = ?").get(id);
     const boardGamesRows = this.db.prepare("SELECT bg.* FROM lists_board_games lbg inner join board_games bg on lbg.board_game_id = bg.id WHERE lbg.list_id = ?").all(id);
 
-    return row ? new List({...row, boardGames: boardGamesRows.map((row: any) => new BoardGame(row)) }) : undefined;
+    return row ? new List({...row, playerId: row.player_id, boardGames: boardGamesRows.map((row: any) => new BoardGame(row)) }) : undefined;
   }
 
   async findByPlayerId(playerId: string): Promise<List[]> {
@@ -30,7 +30,7 @@ export class SqliteListRepository implements IListRepository {
     
     return rows.map((row: any) => {
       const boardGamesRows = this.db.prepare("SELECT bg.* FROM lists_board_games lbg inner join board_games bg on lbg.board_game_id = bg.id WHERE lbg.list_id = ?").all(row.id);
-      return new List({...row, boardGames: boardGamesRows.map((row: any) => new BoardGame(row))});
+      return new List({...row, playerId: row.player_id, boardGames: boardGamesRows.map((row: any) => new BoardGame(row))});
     });
   }
 
@@ -72,7 +72,7 @@ export class SqliteListRepository implements IListRepository {
 
     if (!row) throw new Error(`List with id ${id} not found, but was expected`);
 
-    return new List({...row, boardGames: boardGamesRows.map((row: any) => new BoardGame(row)) });
+    return new List({...row, playerId: row.player_id, boardGames: boardGamesRows.map((row: any) => new BoardGame(row)) });
   }
 
   async delete(list: List): Promise<void> {

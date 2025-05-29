@@ -1,12 +1,5 @@
 import fastify, { FastifyInstance } from 'fastify'
-
-const config = {
-  app: {
-    domain: 'localhost',
-    port: 8000,
-    kind: 'development'
-  }
-}
+import { config } from './config';
 
 class App {
   public app: FastifyInstance;

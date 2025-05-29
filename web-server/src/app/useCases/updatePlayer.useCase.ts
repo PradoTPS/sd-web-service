@@ -8,7 +8,7 @@ export class UpdatePlayerUseCase {
   async execute(data: IUpdatePlayerDTOInput): Promise<IUpdatePlayerDTOOutput> {
     let player = await this.PlayerRepository.findById(data.id);
 
-    if (!player) throw new NotFound(`Board game with id ${data.id} not found`);
+    if (!player) throw new NotFound(`Player with id ${data.id} not found`);
 
     player = await this.PlayerRepository.update(player, {
       name: data.name,

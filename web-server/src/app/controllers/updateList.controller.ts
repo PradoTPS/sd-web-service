@@ -1,10 +1,18 @@
-import { List } from "../../domain/entities/list.entity";
+import { Link } from "../../domain/types/link.type";
+import { config } from "../../infrastructure/webserver/fastify/config";
 import { UpdateListUseCase } from "../useCases/updateList.useCase";
 
 export interface IResponse {
   body: {
     message: string;
-    list: List;
+    list: {
+      id: string;
+      name: string;
+      playerId: string;
+      createdAt: string;
+      updatedAt: string;
+      links: Link[];
+    };
   };
   statusCode: number;
 }
@@ -29,7 +37,26 @@ export class UpdateListController {
       statusCode: 200,
       body: {
         message: 'List successfully updated!',
-        list,
+        list: {
+          ...list.toJSON(),
+          links: [
+            {
+              href: `http://${config.app.domain}:${config.app.port}/players/${list.playerId}/lists/${list.id}`,
+              rel: 'self',
+              type: 'GET',
+            },
+            {
+              href: `http://${config.app.domain}:${config.app.port}/players/${list.playerId}/lists/${list.id}`,
+              rel: 'update',
+              type: 'PUT',
+            },
+            {
+              href: `http://${config.app.domain}:${config.app.port}/players/${list.playerId}/lists/${list.id}`,
+              rel: 'delete',
+              type: 'DELETE',
+            }
+          ]
+        },
       },
     };
   }
