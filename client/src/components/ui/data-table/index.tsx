@@ -15,6 +15,15 @@ import {
 } from "@tanstack/react-table"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -35,13 +44,29 @@ import {
 } from "@/components/ui/table"
 import { Checkbox } from "@/components/ui/checkbox"
 
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { useForm } from "react-hook-form"
+import { schemaMap } from "@/lib/schemas"
+import { zodResolver } from "@hookform/resolvers/zod"
+import z from "zod"
 interface Props<T> {
   data: T[];
   keys: string[];
+  schemaType: string;
 }
 
-function generateColumns<Type>({ keys }: { keys: string[] }): ColumnDef<Type>[] {
+function generateColumns<Type>({ keys, form }: { keys: string[], form: typeof useForm }): ColumnDef<Type>[] {
   const keysCopy = [...keys];
+  const keysToUpdate = keysCopy.filter((key) => key !== "id" && key !== "createdAt" && key !== "updatedAt");
   const firstKey = keysCopy.shift() ?? "";
   const secondKey = keysCopy.shift() ?? "";
 
@@ -102,44 +127,92 @@ function generateColumns<Type>({ keys }: { keys: string[] }): ColumnDef<Type>[] 
       enableHiding: false,
       cell: ({ row }) => {
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem 
-                onClick={() => {
-                  const original = row.original as { _links?: { href: string, rel: string, type: string }[] }
-                  const updateLink = (original._links ?? []).find((link) => link.rel === 'update')
-                  
-                  if (updateLink) {
-                    const { href, type } = updateLink
-                    fetch(href, {
-                      method: type,
-                    })
-                  }
-                }}
-              >Update</DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  const original = row.original as { _links?: { href: string, rel: string, type: string }[] }
-                  const deleteLink = (original._links ?? []).find((link) => link.rel === 'delete')
-                  
-                  if (deleteLink) {
-                    const { href, type } = deleteLink
-                    fetch(href, {
-                      method: type,
-                    })
-                  }
-                }}
-                className="text-red-500"
-              >Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Dialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem>Update</DropdownMenuItem>
+                  </DialogTrigger>
+
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Update</DialogTitle>
+                      <DialogDescription>Update yor entity</DialogDescription>
+                    </DialogHeader>
+
+                    <Form {...form}>
+                      <form 
+                        onSubmit={form.handleSubmit((data) => {
+                          const original = row.original as { _links?: { href: string, rel: string, type: string }[] }
+                          const updateLink = (original._links ?? []).find((link) => link.rel === 'update')
+                          
+                          if (updateLink) {
+                            const { href, type } = updateLink
+                            fetch(href, {
+                              method: type,
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify(data),
+                            })
+                          }
+                        })}
+                        className="w-2/3 space-y-6"
+                      >
+                        <div className="grid gap-4">
+                          {keysToUpdate.map((key) => (
+                            <FormField
+                              key={key}
+                              control={form.control}
+                              name={key}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>{key.charAt(0).toUpperCase() + key.slice(1)}</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder={(row.original as any)[key]} {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          ))}
+                        </div>
+
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                          </DialogClose>
+                          <Button type="submit" value="submit">Save changes</Button>
+                        </DialogFooter>
+                      </form>
+                    </Form>
+                  </DialogContent>
+
+                <DropdownMenuItem
+                  onClick={() => {
+                    const original = row.original as { _links?: { href: string, rel: string, type: string }[] }
+                    const deleteLink = (original._links ?? []).find((link) => link.rel === 'delete')
+                    
+                    if (deleteLink) {
+                      const { href, type } = deleteLink
+                      fetch(href, {
+                        method: type,
+                      })
+                    }
+                  }}
+                  className="text-red-500"
+                >Delete</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </Dialog>
         )
       },
     },
@@ -147,9 +220,15 @@ function generateColumns<Type>({ keys }: { keys: string[] }): ColumnDef<Type>[] 
 }
 
 export default function DataTable<Type>(props: Readonly<Props<Type>>) {
-  const { data, keys } = props;
+  const { data, keys, schemaType } = props;
 
-  const columns = generateColumns({ keys });
+  const schema = schemaMap[schemaType] ?? z.object({}); // Fallback to an empty schema if not found
+  
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema)
+  })
+
+  const columns = generateColumns({ keys, form });
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

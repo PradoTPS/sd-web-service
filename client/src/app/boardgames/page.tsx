@@ -42,6 +42,7 @@ export default async function Page() {
       <DataTable<BoardGame>
         data={data}
         keys={keys}
+        schemaType={"boardgame"}
       />
       <InputForm
         schemaType={"boardgame"}

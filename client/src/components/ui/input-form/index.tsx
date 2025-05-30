@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { schemaMap } from "@/lib/schemas"
 
 interface Props {
   schemaType: string;
@@ -21,16 +22,6 @@ interface Props {
   description: string;
   url: string;
   method: "POST" | "PUT";
-}
-
-const BoardGameSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  link: z.string().url(),
-})
-
-const schemaMap: Record<string, z.ZodObject<z.ZodRawShape>> = {
-  boardgame: BoardGameSchema,
 }
 
 export default function InputForm(props: Readonly<Props>) {
