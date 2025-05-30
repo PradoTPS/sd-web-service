@@ -1,13 +1,15 @@
 import App from '../infrastructure/webserver/fastify/server';
 import BoardGameRoutes from './handlers/BoardGame.route';
 import PlayerRoutes from './handlers/Player.route';
-import ListRoutes from './handlers/List.route';
+import PlayerListRoutes from './handlers/PlayerList.route';
+import ListRoute from './handlers/List.route';
 
 export const app = new App({
   routes: [
     BoardGameRoutes,
     PlayerRoutes,
-    ListRoutes,
+    PlayerListRoutes,
+    ListRoute,
   ],
 })
 
