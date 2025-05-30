@@ -4,6 +4,7 @@ export default function Home() {
   return (
     <div>
       <section className="grid grid-cols-1">
+        <p className="text-2xl font-bold mb-4" >Início</p>
         <Card>
           <CardHeader>
             <div className="flex">

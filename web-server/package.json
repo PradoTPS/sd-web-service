@@ -11,6 +11,7 @@
   "author": "Thiago do Prado",
   "license": "MIT",
   "dependencies": {
+    "@fastify/cors": "^11.0.1",
     "better-sqlite3": "^11.10.0",
     "fastify": "^5.3.3",
     "http-errors": "^2.0.0",

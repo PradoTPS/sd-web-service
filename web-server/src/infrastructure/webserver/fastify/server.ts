@@ -1,4 +1,5 @@
 import fastify, { FastifyInstance } from 'fastify'
+import cors from '@fastify/cors'
 import { config } from './config';
 
 class App {
@@ -8,6 +9,12 @@ class App {
 
   constructor(appInit: { routes: any }) {
     this.app = fastify();
+
+    this.app.register(cors, {
+      origin: '*', // Allow all origins
+      methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+      allowedHeaders: ['Content-Type'], // Allowed headers
+    });
 
     this.routes(appInit.routes);
   }
