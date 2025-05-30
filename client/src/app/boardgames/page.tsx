@@ -1,4 +1,5 @@
 import DataTable from "@/components/ui/data-table";
+import InputForm from "@/components/ui/input-form";
 
 async function fetchData(): Promise<BoardGame[]> {
   const response = await fetch("http://localhost:8000/boardgames", {
@@ -37,11 +38,18 @@ export default async function Page() {
 
   return (
     <section className="grid grid-cols-1">
-        <p className="text-2xl font-bold mb-4" >Board Games</p>
-        <DataTable<BoardGame>
-          data={data}
-          keys={keys}
-        />
+      <p className="text-2xl font-bold mb-4" >Board Games</p>
+      <DataTable<BoardGame>
+        data={data}
+        keys={keys}
+      />
+      <InputForm
+        schemaType={"boardgame"}
+        title={"New - Board Game"}
+        description={"Cadastrar um novo board game"}
+        url={"http://localhost:8000/boardgames"}
+        method={"POST"}
+      />
     </section>
   );
 }
