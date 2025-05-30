@@ -6,6 +6,12 @@ export const BoardGameSchema = z.object({
   link: z.string().url(),
 })
 
+export const PlayerSchema = z.object({
+  name: z.string(),
+  email: z.string(),
+})
+
 export const schemaMap: Record<string, z.ZodObject<z.ZodRawShape>> = {
   boardgame: BoardGameSchema,
+  player: PlayerSchema
 }
