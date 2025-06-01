@@ -33,12 +33,33 @@ export default function InputForm(props: Readonly<Props>) {
   })
 
   function onSubmitForm(data: z.infer<typeof schema>) {
-    fetch(url, {
+    const variableName = url.split("/").find(part => part.startsWith("{") && part.endsWith("}"))?.slice(1, -1);
+    let modifiedUrl = url;
+
+    if (variableName) {
+      const variableValue = data[variableName];
+      if (!variableValue) {
+        console.error(`Missing value for variable: ${variableValue}`);
+        return;
+      }
+
+      modifiedUrl = modifiedUrl.replace(`{${variableName}}`, variableValue);
+    }
+
+    const parsedData = {
+      ...data,
+    }
+
+    if (parsedData["boardGames"]) {
+      parsedData["boardGames"] = data.boardGames.split(",").map((id: string) => id.trim()).filter((id: string) => id !== "");
+    }
+
+    fetch(modifiedUrl, {
       method: method,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(parsedData),
     })
   }
 

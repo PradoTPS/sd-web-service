@@ -119,7 +119,7 @@ function generateColumns<Type>({ keys, form }: { keys: string[], form: typeof us
       accessorKey: key,
       header: key.charAt(0).toUpperCase() + key?.slice(1),
       cell: ({ row }: { row: any }) => (
-        <div className="capitalize">{row.getValue(key)}</div>
+        <div className="capitalize">{Array.isArray(row.getValue(key)) ? row.getValue(key).join(', ') : row.getValue(key)}</div>
       ),
     })),
     {
@@ -154,6 +154,14 @@ function generateColumns<Type>({ keys, form }: { keys: string[], form: typeof us
                           const original = row.original as { _links?: { href: string, rel: string, type: string }[] }
                           const updateLink = (original._links ?? []).find((link) => link.rel === 'update')
                           
+                          const parsedData = {
+                            ...data,
+                          }
+
+                          if (parsedData["boardGames"]) {
+                            parsedData["boardGames"] = data.boardGames.split(",").map((id: string) => id.trim()).filter((id: string) => id !== "");
+                          }
+                          
                           if (updateLink) {
                             const { href, type } = updateLink
                             fetch(href, {
@@ -161,7 +169,7 @@ function generateColumns<Type>({ keys, form }: { keys: string[], form: typeof us
                               headers: {
                                 "Content-Type": "application/json",
                               },
-                              body: JSON.stringify(data),
+                              body: JSON.stringify(parsedData),
                             })
                           }
                         })}

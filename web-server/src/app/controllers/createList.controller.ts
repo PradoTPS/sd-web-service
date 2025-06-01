@@ -20,6 +20,7 @@ export interface IResponse {
 export interface IEvent {
   name: string;
   playerId: string;
+  boardGames?: string[];
 }
 
 export class CreateListController {
@@ -29,6 +30,7 @@ export class CreateListController {
     const { list } = await this.createListUseCase.execute({
       name: event.name,
       playerId: event.playerId,
+      boardGameIds: event.boardGames,
     });
 
     return {

@@ -37,6 +37,13 @@ export class SqliteListRepository implements IListRepository {
   async create(list: List): Promise<void> {
     const { id, name, playerId, createdAt, updatedAt } = list.toJSON();
     this.db.prepare("INSERT INTO lists (id, name, player_id, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)").run(id, name, playerId, createdAt, updatedAt);
+
+    if (list.boardGames && list.boardGames.length > 0) {
+      const insertStmt = this.db.prepare("INSERT INTO lists_board_games (list_id, board_game_id, createdAt, updatedAt) VALUES (?, ?, ?, ?)");
+      for (const boardGame of list.boardGames) {
+        insertStmt.run(id, boardGame.id, new Date().toISOString(), new Date().toISOString());
+      }
+    }
   }
 
   async update(list: List, { name, boardGameIds }: { name: string | undefined, boardGameIds: string[] | undefined }): Promise<List> {

@@ -11,6 +11,7 @@ import { DeleteListController } from '../../app/controllers/deleteList.controlle
 import { DeleteListUseCase } from '../../app/useCases/deleteList.useCase'
 import { UpdateListController } from '../../app/controllers/updateList.controller'
 import { UpdateListUseCase } from '../../app/useCases/updateList.useCase'
+import { SqliteBoardGameRepository } from '../../infrastructure/repositories/sqlite/sqliteBoardGame.repository'
 
 class PlayerListRoutes {
   public prefix_route = '/players/:playerId/lists'
@@ -27,7 +28,7 @@ class PlayerListRoutes {
       const { body } = request as { body: Parameters<typeof CreateListController.prototype.handle>[0] };
       const { playerId } = request.params as { playerId: Parameters<typeof CreateListController.prototype.handle>[0]['playerId'] };
 
-      return new CreateListController( new CreateListUseCase(new SqliteListRepository(db)) ).handle({ ...body, playerId});
+      return new CreateListController( new CreateListUseCase(new SqliteListRepository(db), new SqliteBoardGameRepository(db)) ).handle({ ...body, playerId});
     })
 
     fastify.get(`/:listId`, async (request) => {

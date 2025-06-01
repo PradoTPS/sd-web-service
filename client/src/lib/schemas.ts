@@ -11,7 +11,14 @@ export const PlayerSchema = z.object({
   email: z.string(),
 })
 
+export const ListSchema = z.object({
+  name: z.string(),
+  playerId: z.string(),
+  boardGames: z.string(),
+})
+
 export const schemaMap: Record<string, z.ZodObject<z.ZodRawShape>> = {
   boardgame: BoardGameSchema,
-  player: PlayerSchema
+  player: PlayerSchema,
+  list: ListSchema,
 }
