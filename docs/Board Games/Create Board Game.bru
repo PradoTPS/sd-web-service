@@ -1,0 +1,23 @@
+meta {
+  name: Create Board Game
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8000/boardgames
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Xadrez 2",
+    "description": "Jogo de xadrez 2",
+    "link": "boardgame.com/xadrez2"
+  }
+}

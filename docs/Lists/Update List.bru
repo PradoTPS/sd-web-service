@@ -1,0 +1,24 @@
+meta {
+  name: Update List
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:8000/players/662c1bd7-50f7-44bf-ba6e-db3418431a09/lists/20a08c83-17c4-4b4e-b773-4673563c8cc4
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Alterada",
+    "boardGames": [
+      "76dfa10c-804a-458f-a085-db195886d1b4", "5e9a4bf3-20c2-4d9d-8624-85115610830c"
+    ]
+  }
+}

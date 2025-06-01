@@ -1,0 +1,23 @@
+meta {
+  name: Update Board Game
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:8000/boardgames/5e9a4bf3-20c2-4d9d-8624-85115610830c
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Xadrez 2",
+    "description": "Jogo de xadrez 2",
+    "link": "boardgame.com/xadrez2"
+  }
+}

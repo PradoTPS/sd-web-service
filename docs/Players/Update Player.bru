@@ -1,0 +1,22 @@
+meta {
+  name: Update Player
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:8000/players/f2b369fc-0436-4bf7-88b6-6c0d9775fb64
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "John",
+    "email": "john@mail.com"
+  }
+}

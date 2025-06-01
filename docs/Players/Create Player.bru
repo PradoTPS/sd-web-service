@@ -1,0 +1,22 @@
+meta {
+  name: Create Player
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8000/players
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Thiago",
+    "email": "thiago@mail.com"
+  }
+}
